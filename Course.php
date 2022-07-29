@@ -9,41 +9,43 @@ if(!isset($_SESSION['id'])){
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyCollege</title>
-    <link href="main.css" rel="stylesheet">    
-<link href="bootstrap.min.css" rel="stylesheet">
-<link href="main-style.css" rel="stylesheet">
-<script src="jquery-3.3.1.min.js"></script>
-<script src="popper.min.js"></script>
-<script src="bootstrap.min.js"></script>
-<script src="fontawesome-all.min.js"></script>
-<script src="form-jquery.js" type="text/javascript"></script>	
-<script src="main-js.js"></script>
- 
+    <link href="main.css" rel="stylesheet">
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <link href="main-style.css" rel="stylesheet">
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="popper.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="fontawesome-all.min.js"></script>
+    <script src="form-jquery.js" type="text/javascript"></script>
+    <script src="main-js.js"></script>
+
     <script></script>
 </head>
+
 <body>
     <div class="nav_bar">
         <ul class="top-bar">
             <li>
-                <img src="user.png" alt="home"style="width: 20px; height: 20px;">
+                <img src="user.png" alt="home" style="width: 20px; height: 20px;">
                 <a style="text-decoration: none;" class="Pseudo" href="student.php">Students</a>
             </li>
             <li>
-                <img src="note.png" alt="home"style="width: 20px; height: 20px;">
+                <img src="note.png" alt="home" style="width: 20px; height: 20px;">
                 <a style="text-decoration: none;" class="Pseudo" href="Course.php">Courses</a>
             </li>
-            <li style="float:right;padding-left:500px" >
-                <img src="note.png" alt="home"style="width: 20px; height: 20px;">
-                <a  style="text-decoration: none;float:right;" class="Pseudo" href="adminpage/logout.php">Log out</a>
+            <li style="float:right;padding-left:500px">
+                <img src="note.png" alt="home" style="width: 20px; height: 20px;">
+                <a style="text-decoration: none;float:right;" class="Pseudo" href="adminpage/logout.php">Log out</a>
             </li>
         </ul>
-</div>
-<?php
+    </div>
+    <?php
  
 if (!isset($_SESSION['id']) ||(trim ($_SESSION['id']) == '')) {
   header('index.php');
@@ -61,44 +63,53 @@ $admin = $_SESSION['id'];
         $rows=$result->num_rows;
         if($rows > 0){
           ?>
-<div class="modal fade" id="validate_material" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-<div class="modal-dialog modal-dialog-centered" role="document">
-<div class="modal-content">
-<div class="modal-header">
-  <h5 class="modal-title" id="exampleModalCenterTitle"><h3>لديك رمز مادة مسجل بالفعل مسبقا </h3></h5>
-  <button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<div class="modal-body">
-<form class="contact-form "  action="Course.php" method="post" id="" enctype="multipart/form-data">
-<div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
-<input type="hidden" class="form-control" name="course_id" value="<?php echo ''.$user['course_id'].''?>" >
-<button type="button" onclick="goBack()" class="btn btn-danger" data-dismiss="modal">رجوع</button>
+    <div class="modal fade" id="validate_material" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">
+                        <h3>لديك رمز مادة مسجل بالفعل مسبقا </h3>
+                    </h5>
+                    <button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="contact-form " action="Course.php" method="post" id="" enctype="multipart/form-data">
+                        <div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
+                        <input type="hidden" class="form-control" name="course_id"
+                            value="<?php echo ''.$user['course_id'].''?>">
+                        <button type="button" onclick="goBack()" class="btn btn-danger"
+                            data-dismiss="modal">رجوع</button>
 
-<button type="submit"  class="btn btn-success">موافق</button>
-</form>
+                        <button type="submit" class="btn btn-success">موافق</button>
+                    </form>
 
-</div>
-</div>
-</div>
-</div>				
-<?php
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
         }
         else  if($rows == 0){
-    $query ="INSERT INTO courses (course_id, course_name, number_units,class_of,admin_id) VALUES
-    ('$course_id', '$course_name',$number_units,$class_of,$admin)";
- 
-   $result = $conn->query($query);
-   if ($result) {
-    $conn->close();
-    header("location:course.php"); 
-      exit;
-   } else {
-    echo "<p>Unable to execute the query.</p> ";
-    echo $query;
-    die ($conn -> error);
-   }
+          $conn->begin_transaction();
+          try {
+            $query ="INSERT INTO courses (course_id, course_name, number_units,class_of,admin_id) VALUES
+            ('$course_id', '$course_name',$number_units,$class_of,$admin)";
+         
+           $result = $conn->query($query);
+             $conn->commit();
+             header("location:Course.php"); 
+          } catch (mysqli_sql_exception $exception) {
+            
+              echo 'Transaction Failed!!';
+              $conn->rollback();
+              $conn=null;
+              echo'<br>';
+              echo $exception->getMessage();
+              header("location:?course_add=");
+          }
   }
   }
   if(isset($_POST['menu_course_delete'])){
@@ -123,6 +134,7 @@ catch (mysqli_sql_exception $exception) {
     $conn=null;
     echo'<br>';
     echo $exception->getMessage();
+    header("location:course.php");
 }
 }
 if(isset($_POST['menu_course_edit'])){
@@ -131,21 +143,21 @@ if(isset($_POST['menu_course_edit'])){
   $course_name = $_POST['course_name'];
   $number_units = $_POST['number_units'];
   $class_of = $_POST['class_of'];
-$query ="update courses set  course_name='$course_name', number_units=$number_units , class_of=$class_of where  course_id='$course_id'";
-    $course_edit =  $conn->query($query);
-
-    if($course_edit)
-    {
-        $conn->close();
-        header("location:course.php"); 
-        exit;
-    }
-    else
-    {
-        echo "<p>Unable to execute the query.</p> ";
-        echo $query;
-        die ($conn -> error);
-    }    	
+    $conn->begin_transaction();
+    try {
+      $query ="update courses set  course_name='$course_name', number_units=$number_units , class_of=$class_of where  course_id='$course_id'";
+      $course_edit =  $conn->query($query);
+       $conn->commit();
+       header("location:Course.php"); 
+    } catch (mysqli_sql_exception $exception) {
+      
+        echo 'Transaction Failed!!';
+        $conn->rollback();
+        $conn=null;
+        echo'<br>';
+        echo $exception->getMessage();
+        header("location:?course_edit=");
+    }	
 
   }
   
@@ -156,28 +168,33 @@ if(isset($_POST['menu_course_requir'])){
   
   if($requir_id == $course_id){
     ?>
-    <div class="modal fade" id="validate_requir" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-  <div class="modal-content">
-  <div class="modal-header">
-  <h5 class="modal-title" id="exampleModalCenterTitle"><h3>لا يمكن إضافة هذا المتطلب </h3></h5>
-  <button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-  </div>
-  <div class="modal-body">
-  <form class="contact-form "  action="Course.php" method="post" id="" enctype="multipart/form-data">
-  <div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
-  <input type="hidden" class="form-control" name="course_id" value="<?php echo ''.$user['course_id'].''?>" >
-  <button type="button" onclick="goBack()" class="btn btn-danger" data-dismiss="modal">رجوع</button>
-  
-  <button type="submit"  class="btn btn-success">موافق</button>
-  </form>
-  
-  </div>
-  </div>
-  </div>
-  </div>
+    <div class="modal fade" id="validate_requir" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">
+                        <h3>لا يمكن إضافة هذا المتطلب </h3>
+                    </h5>
+                    <button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="contact-form " action="Course.php" method="post" id="" enctype="multipart/form-data">
+                        <div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
+                        <input type="hidden" class="form-control" name="course_id"
+                            value="<?php echo ''.$user['course_id'].''?>">
+                        <button type="button" onclick="goBack()" class="btn btn-danger"
+                            data-dismiss="modal">رجوع</button>
+
+                        <button type="submit" class="btn btn-success">موافق</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
     <?php
   }
   else{
@@ -222,117 +239,129 @@ if(isset($_POST['menu_course_requir'])){
 }
 elseif($found_course==0){
   ?>
-  <div class="modal fade" id="course_show" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-<div class="modal-dialog modal-dialog-centered" role="document">
-<div class="modal-content">
-<div class="modal-header">
-<h5 class="modal-title" id="exampleModalCenterTitle"><h3>لم يتم العثور على هذه المادة</h3></h5>
-<button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
-  <span aria-hidden="true">&times;</span>
-</button>
-</div>
-<div class="modal-body">
-<form class="contact-form "  action="Course.php" method="post" id="" enctype="multipart/form-data">
-<div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
-<input type="hidden" class="form-control" name="course_id" value="<?php echo ''.$user['course_id'].''?>" >
-<button type="button" onclick="goBack()" class="btn btn-danger" data-dismiss="modal">رجوع</button>
+    <div class="modal fade" id="course_show" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">
+                        <h3>لم يتم العثور على هذه المادة</h3>
+                    </h5>
+                    <button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="contact-form " action="Course.php" method="post" id="" enctype="multipart/form-data">
+                        <div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
+                        <input type="hidden" class="form-control" name="course_id"
+                            value="<?php echo ''.$user['course_id'].''?>">
+                        <button type="button" onclick="goBack()" class="btn btn-danger"
+                            data-dismiss="modal">رجوع</button>
 
-<button type="submit"  class="btn btn-success">موافق</button>
-</form>
+                        <button type="submit" class="btn btn-success">موافق</button>
+                    </form>
 
-</div>
-</div>
-</div>
-</div>
-  <?php  
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php  
 }
 
 
 }
 elseif($found==1) {
   ?>
-  <div class="modal fade" id="validate_requir" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-<div class="modal-dialog modal-dialog-centered" role="document">
-<div class="modal-content">
-<div class="modal-header">
-<h5 class="modal-title" id="exampleModalCenterTitle"><h3>لديك رمز المادة مسجل بالفعل</h3></h5>
-<button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
-  <span aria-hidden="true">&times;</span>
-</button>
-</div>
-<div class="modal-body">
-<form class="contact-form "  action="Course.php" method="post" id="" enctype="multipart/form-data">
-<div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
-<input type="hidden" class="form-control" name="course_id" value="<?php echo ''.$user['course_id'].''?>" >
-<button type="button" onclick="goBack()" class="btn btn-danger" data-dismiss="modal">رجوع</button>
+    <div class="modal fade" id="validate_requir" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">
+                        <h3>لديك رمز المادة مسجل بالفعل</h3>
+                    </h5>
+                    <button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="contact-form " action="Course.php" method="post" id="" enctype="multipart/form-data">
+                        <div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
+                        <input type="hidden" class="form-control" name="course_id"
+                            value="<?php echo ''.$user['course_id'].''?>">
+                        <button type="button" onclick="goBack()" class="btn btn-danger"
+                            data-dismiss="modal">رجوع</button>
 
-<button type="submit"  class="btn btn-success">موافق</button>
-</form>
+                        <button type="submit" class="btn btn-success">موافق</button>
+                    </form>
 
-</div>
-</div>
-</div>
-</div>
-  <?php
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
 }  
   }
 } 	
   if(isset($_GET['course_add'])){
 
     ?>
-<div class="modal fade" id="course_add" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalCenterTitle">إضافة مقرر</h5>
-        <button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-	  
-		<form class="contact-form "  action="Course.php" method="post" id="" enctype="multipart/form-data">
-						
-						
-					  <div class="form-group row">
-						<label for="colFormLabel" class="col-sm-3 col-form-label">رمز المادة</label>
-						<div class="col-sm-9">
-						  <input type="text" class="form-control"  required name="course_id"  >
-						</div>
-					  </div>
-					  
-					  <div class="form-group row">
-						<label for="colFormLabel" class="col-sm-3 col-form-label">إسم المقرر</label>
-						<div class="col-sm-9">
-						  <input type="text" class="form-control" required name="course_name"  >
-						</div>
-					  </div>
-					  
-					  
-					  <div class="form-group row">
-						<label for="colFormLabel" class="col-sm-3 col-form-label">عدد الوحدات</label>
-						<div class="col-sm-9">
-						  <input type="text" class="form-control" required name="number_units" >
-						</div>
-					  </div>
-            <div class="form-group row">
-						<label for="colFormLabel" class="col-sm-3 col-form-label">عدد الطلبة لهذا المقرر</label>
-						<div class="col-sm-9">
-						  <input type="text" class="form-control" required name="class_of" >
-						</div>
-					  </div>
-					  
-		   <div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
-        <button type="button" onclick="goBack()" class="btn btn-danger" data-dismiss="modal">رجوع</button>
-		 
-        <button type="submit" name="menu_course_add" class="btn btn-success">إنشاء</button>
-		  </form>
+    <div class="modal fade" id="course_add" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">إضافة مقرر</h5>
+                    <button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
 
-      </div>
+                    <form class="contact-form " action="Course.php" method="post" id="" enctype="multipart/form-data">
+
+
+                        <div class="form-group row">
+                            <label for="colFormLabel" class="col-sm-3 col-form-label">رمز المادة</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required name="course_id">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="colFormLabel" class="col-sm-3 col-form-label">إسم المقرر</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required name="course_name">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row">
+                            <label for="colFormLabel" class="col-sm-3 col-form-label">عدد الوحدات</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required name="number_units">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="colFormLabel" class="col-sm-3 col-form-label">عدد الطلبة لهذا المقرر</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required name="class_of">
+                            </div>
+                        </div>
+
+                        <div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
+                        <button type="button" onclick="goBack()" class="btn btn-danger"
+                            data-dismiss="modal">رجوع</button>
+
+                        <button type="submit" name="menu_course_add" class="btn btn-success">إنشاء</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>				
-		<?php
+    <?php
     
    }
    if(isset($_GET['course_delete'])){
@@ -340,29 +369,34 @@ elseif($found==1) {
         $sql = mysqli_query($conn , " select * from courses where course_id='$course_id'");
         $user= mysqli_fetch_assoc($sql);
 ?>
-<div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-<div class="modal-dialog modal-dialog-centered" role="document">
-<div class="modal-content">
-<div class="modal-header">
-  <h5 class="modal-title" id="exampleModalCenterTitle"><h3>تأكيد الحدف </h3></h5>
-  <button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<div class="modal-body">
-<form class="contact-form "  action="course.php" method="post" id="" enctype="multipart/form-data">
-<div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
-<input type="hidden" class="form-control" name="id_delete" value="<?php echo ''.$user['course_id'].''?>" >
-<button type="button" onclick="goBack()" class="btn btn-danger" data-dismiss="modal">رجوع</button>
+    <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">
+                        <h3>تأكيد الحدف </h3>
+                    </h5>
+                    <button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="contact-form " action="course.php" method="post" id="" enctype="multipart/form-data">
+                        <div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
+                        <input type="hidden" class="form-control" name="id_delete"
+                            value="<?php echo ''.$user['course_id'].''?>">
+                        <button type="button" onclick="goBack()" class="btn btn-danger"
+                            data-dismiss="modal">رجوع</button>
 
-<button type="submit" name="menu_course_delete" class="btn btn-success">حدف</button>
-</form>
+                        <button type="submit" name="menu_course_delete" class="btn btn-success">حدف</button>
+                    </form>
 
-</div>
-</div>
-</div>
-</div>				
-<?php
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
    }
 if(isset($_GET['course_edit'])){
  
@@ -370,128 +404,138 @@ if(isset($_GET['course_edit'])){
         $sql = mysqli_query($conn , " select * from courses where course_id ='$course_id'");
         $user= mysqli_fetch_assoc($sql);
 ?>
-<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalCenterTitle">تعديل مقرر</h5>
-        <button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-	  
-		<form class="contact-form "  action="Course.php" method="post" id="" enctype="multipart/form-data">
-						
-						
-					  <div class="form-group row">
-						<label for="colFormLabel" class="col-sm-3 col-form-label">رمز المقرر</label>
-						<div class="col-sm-9">
-						  <input type="text" class="form-control" required name="course_id" value="<?php echo ''.$user['course_id'].'';?>">
-						</div>
-					  </div>
-					  
-					  <div class="form-group row">
-						<label for="colFormLabel" class="col-sm-3 col-form-label">إسم المقرر</label>
-						<div class="col-sm-9">
-						  <input type="text" class="form-control" required name="course_name" value="<?php echo ''.$user['course_name'].'';?>" >
-						</div>
-					  </div>
-					  
-            <div class="form-group row">
-						<label for="colFormLabel" class="col-sm-3 col-form-label">عدد الوحدات</label>
-						<div class="col-sm-9">
-						  <input type="text" class="form-control" required name="number_units" value="<?php echo ''.$user['number_units'].'';?>" >
-						</div>
-					  </div>
-					  
-            <div class="form-group row">
-						<label for="colFormLabel" class="col-sm-3 col-form-label">عدد الطلبة لهذا المقرر</label>
-						<div class="col-sm-9">
-						  <input type="text" class="form-control" required name="class_of" value="<?php echo ''.$user['class_of'].'';?>" >
-						</div>
-					  </div>
+    <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">تعديل مقرر</h5>
+                    <button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
 
-		   <div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
-        <button type="button" onclick="goBack()" class="btn btn-danger" data-dismiss="modal">رجوع</button>
-		 
-        <button type="submit" name="menu_course_edit" class="btn btn-success">تعديل</button>
-		  </form>
+                    <form class="contact-form " action="Course.php" method="post" id="" enctype="multipart/form-data">
 
-      </div>
+
+                        <div class="form-group row">
+                            <label for="colFormLabel" class="col-sm-3 col-form-label">رمز المقرر</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required name="course_id"
+                                    value="<?php echo ''.$user['course_id'].'';?>">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="colFormLabel" class="col-sm-3 col-form-label">إسم المقرر</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required name="course_name"
+                                    value="<?php echo ''.$user['course_name'].'';?>">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="colFormLabel" class="col-sm-3 col-form-label">عدد الوحدات</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required name="number_units"
+                                    value="<?php echo ''.$user['number_units'].'';?>">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="colFormLabel" class="col-sm-3 col-form-label">عدد الطلبة لهذا المقرر</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required name="class_of"
+                                    value="<?php echo ''.$user['class_of'].'';?>">
+                            </div>
+                        </div>
+
+                        <div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
+                        <button type="button" onclick="goBack()" class="btn btn-danger"
+                            data-dismiss="modal">رجوع</button>
+
+                        <button type="submit" name="menu_course_edit" class="btn btn-success">تعديل</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>				
-	<?php
+    <?php
   }
   
 if(isset($_GET['course_requir'])){
   $course_id = $_GET['course_requir'];
   ?>
-  <div class="modal fade" id="course_requir" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalCenterTitle">إضافة متطلب</h5>
-      <button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
+    <div class="modal fade" id="course_requir" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">إضافة متطلب</h5>
+                    <button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <form class="contact-form " action="Course.php" method="post" id="" enctype="multipart/form-data">
+
+
+                        <div class="form-group row">
+                            <label for="colFormLabel" class="col-sm-3 col-form-label">رمز المقرر</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required name="requir_id">
+                                <input type="hidden" lass="form-control" name="course_id"
+                                    value="<?php echo $course_id ?>">
+                            </div>
+                        </div>
+
+
+                        <div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
+                        <button type="button" onclick="goBack()" class="btn btn-danger"
+                            data-dismiss="modal">رجوع</button>
+
+                        <button type="submit" name="menu_course_requir" class="btn btn-success">إضافة</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="modal-body">
-    
-      <form class="contact-form "  action="Course.php" method="post" id="" enctype="multipart/form-data">
-                      
-                      
-                    <div class="form-group row">
-                      <label for="colFormLabel" class="col-sm-3 col-form-label">رمز المقرر</label>
-                      <div class="col-sm-9">
-                        <input type="text" class="form-control"  required name="requir_id"  >
-                        <input type="hidden" lass="form-control" name="course_id" value="<?php echo $course_id ?>" >
-                      </div>
-                    </div>
-                    
-                    
-         <div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
-      <button type="button" onclick="goBack()" class="btn btn-danger" data-dismiss="modal">رجوع</button>
-       
-      <button type="submit" name="menu_course_requir" class="btn btn-success">إضافة</button>
-        </form>
-  
-    </div>
-  </div>
-  </div>
-  </div>				
-      <?php
+    <?php
   
   }
   if(isset($_GET['course_show'])){
     $course_id = $_GET['course_show'];
     ?>
-    <div class="modal fade" id="course_show" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalCenterTitle">عرض المتطلبات</h5>
-        <button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-      
-        <form class="contact-form "  action="course.php" method="post" id="" enctype="multipart/form-data">
-                        
-                        
-                      <div class="form-group row">
-                        <div class="col-sm-9">
-                        <table class="table">
-	  <thead>
-		<tr>
-		  <th scope="col">#</th>
-		  <th scope="col">رمز المقرر</th>
-  </tr>
-  </thead>
-	  <tbody>
-    <?php
+    <div class="modal fade" id="course_show" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">عرض المتطلبات</h5>
+                    <button type="button" class="close" onclick="goBack()" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <form class="contact-form " action="course.php" method="post" id="" enctype="multipart/form-data">
+
+
+                        <div class="form-group row">
+                            <div class="col-sm-9">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">رمز المقرر</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
       $sql = " select * from requirements where course_id='$course_id'";
       $result =  $conn->query($sql);
       $rows=$result->num_rows;
@@ -503,63 +547,64 @@ if(isset($_GET['course_requir'])){
 					  <td>'.$row['Requirement_id'].'</td>
             ';
           } 
-      ?> 
-        </tbody>
-</table>
-        <input type="hidden" lass="form-control" name="course_id" value="<?php echo $course_id ?>" >
+      ?>
+                                    </tbody>
+                                </table>
+                                <input type="hidden" lass="form-control" name="course_id"
+                                    value="<?php echo $course_id ?>">
+                            </div>
                         </div>
-                      </div>       
-           <div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
-        <button type="button" onclick="goBack()" class="btn btn-danger" data-dismiss="modal">رجوع</button>
-         
-        <button type="submit"  class="btn btn-success">موافق</button>
-          </form>
-    
-      </div>
+                        <div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
+                        <button type="button" onclick="goBack()" class="btn btn-danger"
+                            data-dismiss="modal">رجوع</button>
+
+                        <button type="submit" class="btn btn-success">موافق</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
     </div>
-    </div>
-    </div>				
-        <?php
+    <?php
     
     }
   ?>
 
-<style>
-  .h1_course{
-    font-size: 25px;
-    text-align: center;
-    margin: 20px;
-    color: #326091;
-    box-shadow: 10px 5px 5px rgb(0 123 255 / 50%);
-  }
-  .bt_pos {
+    <style>
+    .h1_course {
+        font-size: 25px;
+        text-align: center;
+        margin: 20px;
+        color: #326091;
+        box-shadow: 10px 5px 5px rgb(0 123 255 / 50%);
+    }
+    </style>
+    <div class="bt_pos">
+        <form action="Course.php" method="get">
+            <div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
+            <button style="float:right; background:#ffffff;border-color:#007bff; margin-right:50px" type="submit"
+                name="menu_course_edit" class="btn btn-success"><a href="?course_add="
+                    style="color:black;text-decoration: none;">إضافة مقرر</a></button>
+        </form>
+        <h1 class="h1_course">Courses List</h1>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">رمز المقرر</th>
+                <th scope="col">إٍسم المقرر</th>
+                <th scope="col">عدد الوحدات</th>
+                <th scope="col">حدف</th>
+                <th scope="col">تعديل</th>
+                <th scope="col">المتطلبات</th>
+                <th scope="col">عرض</th>
 
-  }
-</style>
-<div class="bt_pos">
-<form action="Course.php" method="get">
-<div id="product_ar_edit_result" class="text-center col-md-12" style="margin:10px 0;"></div>
-<button style="float:right; background:#ffffff;border-color:#007bff; margin-right:50px" type="submit" name="menu_course_edit" class="btn btn-success"><a href="?course_add=" style="color:black;text-decoration: none;">إضافة مقرر</a></button>
-  </form>
-	<h1 class="h1_course" >Courses List</h1>
-</div>
-	<table class="table">
-	  <thead>
-		<tr>
-		  <th scope="col">#</th>
-		  <th scope="col">رمز المقرر</th>
-		  <th scope="col">إٍسم المقرر</th>
-		  <th scope="col">عدد الوحدات</th>
-      <th scope="col">حدف</th>
-		  <th scope="col">تعديل</th>
-      <th scope="col">المتطلبات</th>
-      <th scope="col">عرض</th>
+            </tr>
+        </thead>
+        <tbody>
 
-    </tr>
-	  </thead>
-	  <tbody>
-
-	  <?php
+            <?php
 	
 
 		$sql = mysqli_query($conn ,"select * from courses ");
@@ -580,106 +625,107 @@ if(isset($_GET['course_requir'])){
 			';
 		}	
 	?>
-	
-  </tbody>
-</table>
 
-<script type="text/javascript">
-    $(window).on('load',function(){
+        </tbody>
+    </table>
+
+    <script type="text/javascript">
+    $(window).on('load', function() {
         $('#edit').modal('show');
     });
-</script>
-<script type="text/javascript">
-    $(window).on('load',function(){
+    </script>
+    <script type="text/javascript">
+    $(window).on('load', function() {
         $('#delete').modal('show');
     });
-</script>
-<script type="text/javascript">
-    $(window).on('load',function(){
+    </script>
+    <script type="text/javascript">
+    $(window).on('load', function() {
         $('#course_add').modal('show');
     });
-</script>
+    </script>
 
-<script type="text/javascript">
-    $(window).on('load',function(){
+    <script type="text/javascript">
+    $(window).on('load', function() {
         $('#course').modal('show');
     });
-</script>
-<script type="text/javascript">
-    $(window).on('load',function(){
+    </script>
+    <script type="text/javascript">
+    $(window).on('load', function() {
         $('#course_requir').modal('show');
     });
-</script>
+    </script>
 
-<script type="text/javascript">
-    $(window).on('load',function(){
+    <script type="text/javascript">
+    $(window).on('load', function() {
         $('#validate_material').modal('show');
     });
-</script>
-<script type="text/javascript">
-    $(window).on('load',function(){
+    </script>
+    <script type="text/javascript">
+    $(window).on('load', function() {
         $('#course_show').modal('show');
     });
-</script>
-<script>
-$('#validate_material').modal({
-backdrop: 'static',
-keyboard: false
-})
-</script>
-<script>
-$('#validate_requir').modal({
-backdrop: 'static',
-keyboard: false
-})
-</script>
-<script>
-$('#course_show').modal({
-backdrop: 'static',
-keyboard: false
-})
-</script>
+    </script>
+    <script>
+    $('#validate_material').modal({
+        backdrop: 'static',
+        keyboard: false
+    })
+    </script>
+    <script>
+    $('#validate_requir').modal({
+        backdrop: 'static',
+        keyboard: false
+    })
+    </script>
+    <script>
+    $('#course_show').modal({
+        backdrop: 'static',
+        keyboard: false
+    })
+    </script>
 
-<script>
-function goBack() {
-    window.history.back();
-}
-</script>
+    <script>
+    function goBack() {
+        window.history.back();
+    }
+    </script>
 
 
-<script>
-$('#edit').modal({
-backdrop: 'static',
-keyboard: false
-})
-</script>
+    <script>
+    $('#edit').modal({
+        backdrop: 'static',
+        keyboard: false
+    })
+    </script>
 
-<script>
-$('#delete').modal({
-backdrop: 'static',
-keyboard: false
-})
-</script>
+    <script>
+    $('#delete').modal({
+        backdrop: 'static',
+        keyboard: false
+    })
+    </script>
 
-<script>
-$('#course_add').modal({
-backdrop: 'static',
-keyboard: false
-})
-</script>
+    <script>
+    $('#course_add').modal({
+        backdrop: 'static',
+        keyboard: false
+    })
+    </script>
 
-<script>
-$('#course').modal({
-backdrop: 'static',
-keyboard: false
-})
-</script>
-<script>
-$('#course_requir').modal({
-backdrop: 'static',
-keyboard: false
-})
-</script>
+    <script>
+    $('#course').modal({
+        backdrop: 'static',
+        keyboard: false
+    })
+    </script>
+    <script>
+    $('#course_requir').modal({
+        backdrop: 'static',
+        keyboard: false
+    })
+    </script>
     <script type="text/javascript" src="validate.js"></script>
 </body>
+
 </html>
