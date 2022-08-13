@@ -5,7 +5,7 @@ if($flag){
 if(!isset($_SESSION['user_id']) or !isset($_SESSION['user_name']) or !isset($_SESSION['last_name'])){
 	header('location:login_std.php');
 }
-}
+} 
 else{
 	$_SESSION['user_id']="";
 	$_SESSION['user_name']="";

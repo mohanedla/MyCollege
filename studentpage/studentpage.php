@@ -107,7 +107,6 @@ $student_id=$_SESSION['user_id'] ;
 
                     <?php
 	$num = 1;
-	$i=0;
     $select ="SELECT * FROM student JOIN student_has_courses ON student.student_id=student_has_courses.student_id
 	JOIN courses ON courses.course_id=student_has_courses.course_id WHERE result=-1 and student.student_id='$student_id' ";
 	$result =  $conn->query($select);

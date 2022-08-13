@@ -214,7 +214,7 @@ document.getElementById('notfound').innerHTML = "الرجاء كتابة رمز 
 document.getElementById('notfound').style.color = "red";
 </script>
 <?php
-	}
+}
 }
 
 ?>

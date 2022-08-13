@@ -52,10 +52,6 @@ if(!isset($_SESSION['id'])){
     </div>
     <?php
  
-if (!isset($_SESSION['id']) ||(trim ($_SESSION['id']) == '')) {
-  header('index.php');
-  exit();
-}
 $admin = $_SESSION['id'];
 
  require_once 'dbconn/dbconn.php';
@@ -217,8 +213,6 @@ else{
     }
     if(isset($_POST['menu_ar_result_delete'])){
       $student_id=$_SESSION['std_result'];
-      $course_id=$_POST['course_id'];
-      $result=$_POST['result'];
       $course_id=$_POST['course_id'];
     $query ="DELETE FROM student_has_courses where student_id='$student_id' and course_id='$course_id'";
         $delete =  $conn->query($query);

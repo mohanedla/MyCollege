@@ -4,7 +4,7 @@ require_once 'dbconn/dbconn.php';
 if(!isset($_SESSION['id'])){
    header('location:adminpage/login_form.php');
 }
-
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 ?>
 
 <!DOCTYPE html>
@@ -92,7 +92,7 @@ $admin = $_SESSION['id'];
     </div>
     <?php
         }
-        else  if($rows == 0){
+        elseif($rows == 0){
           $conn->begin_transaction();
           try {
             $query ="INSERT INTO courses (course_id, course_name, number_units,class_of,admin_id) VALUES
@@ -102,7 +102,6 @@ $admin = $_SESSION['id'];
              $conn->commit();
              header("location:Course.php"); 
           } catch (mysqli_sql_exception $exception) {
-            
               echo 'Transaction Failed!!';
               $conn->rollback();
               $conn=null;
@@ -114,8 +113,6 @@ $admin = $_SESSION['id'];
   }
   if(isset($_POST['menu_course_delete'])){
     $course_id = $_POST['id_delete'];
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-
 $conn->begin_transaction();
 try {
         $query ="DELETE FROM requirements where course_id='$course_id'";
@@ -123,6 +120,7 @@ try {
 
         $query ="DELETE FROM student_has_courses WHERE course_id='$course_id'";
         $stmt = $conn->query($query);
+        
         $query ="DELETE FROM courses where course_id='$course_id'";
         $delete = $conn->query($query);
    $conn->commit();
@@ -198,27 +196,20 @@ if(isset($_POST['menu_course_requir'])){
     <?php
   }
   else{
-  $sql = " select * from requirements where course_id='$course_id'";
+  $sql = " select * from requirements where course_id='$course_id' and Requirement_id='$requir_id'";
       $result =  $conn->query($sql);
       $rows=$result->num_rows;
-      for( $i=0 ; $i < $rows ; ++$i ){
-          $row = $result->fetch_array(MYSQLI_ASSOC);
-          if( $row['Requirement_id'] == $requir_id){
-              $found=1;
-          }
+      if($rows>0){
+        $found=1;
       }
       if($found==0){
         $found_course=0;
-        $sql = " select * from courses ";
+        $sql = " select * from courses where course_id='$requir_id' ";
       $result =  $conn->query($sql);
       $rows=$result->num_rows;
-      for( $i=0 ; $i < $rows ; ++$i ){
-          $row = $result->fetch_array(MYSQLI_ASSOC);
-          if( $row['course_id'] == $requir_id){
-            echo $row['course_id'].$requir_id;
-            $found_course=1;
-          }
-        }
+      if($rows>0){
+        $found_course=1;
+      }
           if($found_course==1){
   $query ="INSERT INTO requirements (Requirement_id,course_id, admin_id) VALUES
   ('$requir_id','$course_id',$admin)";
@@ -537,7 +528,7 @@ if(isset($_GET['course_requir'])){
                                     <tbody>
                                         <?php
       $sql = " select * from requirements where course_id='$course_id'";
-      $result =  $conn->query($sql);
+      $result  =  $conn->query($sql);
       $rows=$result->num_rows;
       for( $i=0 ; $i < $rows ; ){
           $row = $result->fetch_array(MYSQLI_ASSOC);

@@ -183,8 +183,9 @@ $student_id=$_SESSION['user_id'] ;
 		if(isset($_GET['change_pass'])){
  
  $id = $_GET['change_pass'];
-	   $sql = mysqli_query($conn , " select * from student where student_id = '$id' ");
-	   $user= mysqli_fetch_assoc($sql);
+	    $sql =" select * from student where student_id = '$id' ";
+	    $result=$conn->query($sql);
+        $user= $result->fetch_array(MYSQLI_ASSOC);
 ?>
             <div class="modal fade" id="change_pass" tabindex="-1" role="dialog"
                 aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -247,8 +248,9 @@ $student_id=$_SESSION['user_id'] ;
                             <br><br><br>
                             <fieldset>
                                 <?php  
-        $sql = mysqli_query($conn , " select * from student where student_id = '$student_id' ");
-        $user= mysqli_fetch_assoc($sql);
+        $sql = " select * from student where student_id = '$student_id' ";
+        $result=$conn->query($sql);
+        $user= $result->fetch_array(MYSQLI_ASSOC);
 ?>
 
                                 <div class="form-group ">

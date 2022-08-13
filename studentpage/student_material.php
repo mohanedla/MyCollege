@@ -168,7 +168,7 @@ if(isset($_POST['menu_std_course_add'])){
 				$sql = " select * from student_has_courses where course_id='$course_id'";
 				$num_course =  $conn->query($sql);
         		$num=$num_course->num_rows;
-				if(++$num<=$rows_cours['class_of']){
+				if($num<$rows_cours['class_of']){
                     $conn->begin_transaction();
                     try {
                         $insert ="INSERT INTO student_has_courses ( student_id,course_id )VALUE ('$student_id','$course_id') ";
@@ -182,7 +182,7 @@ if(isset($_POST['menu_std_course_add'])){
                         echo'<br>';
                         echo $exception->getMessage();
                     }
-                }
+                } 
 				else{
 					?>
             <div class="modal fade" id="class_of" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
@@ -342,8 +342,8 @@ else {
                 <tbody>
 
                     <?php
-	 
-		$select ="SELECT * FROM student_has_courses   WHERE student_id='$student_id'";
+	
+		$select ="SELECT * FROM student_has_courses WHERE student_id='$student_id'";
 		$result = mysqli_query($conn, $select);
 		   $rows=$result->num_rows;
 		if($rows>0){
